@@ -1,0 +1,5 @@
+$ npm create vite@latest . -> Vanilla -> TypeScript
+$ npm install
+$ npm install kaboom
+$ npm run dev
+

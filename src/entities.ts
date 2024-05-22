@@ -181,6 +181,32 @@ export function setControls(k: KaboomCtx, player: PlayerGameObj) {
     });
 }
 
+export function makeInhalable(k: KaboomCtx, enemy: GameObj) {
+    enemy.onCollide("inhaleZone", () => {
+        enemy.isInhalable = true;
+    });
+
+    enemy.onCollideEnd("inhaleZone", () => {
+        enemy.isInhalable = false;
+    });
+
+    enemy.onCollide("shootingStar", (shootingStar: GameObj) => {
+        k.destroy(enemy);
+        k.destroy(shootingStar);
+    });
+
+    const playerRef = k.get("player")[0];
+    enemy.onUpdate(() => {
+        if (playerRef.isInhaling && enemy.isInhalable) {
+            if (playerRef.direction === "right") {
+                enemy.move(-800, 0);
+                return;
+            }
+            enemy.move(800, 0);
+        }
+    });
+}
+
 export function makeFlameEnemy(k: KaboomCtx, posX: number, posY: number) {
     const flame = k.add([
         k.sprite("assets", { anim: "flame" }),

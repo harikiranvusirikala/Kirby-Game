@@ -1,4 +1,4 @@
-import { makeFlameEnemy, makePlayer, setControls } from "./entities";
+import { makeFlameEnemy, makeGuyEnemy, makePlayer, setControls } from "./entities";
 import { k } from "./kaboomCtx";
 import { makeMap } from "./utils";
 
@@ -50,8 +50,12 @@ async function gameSetup() {
                 k.camPos(kirb.pos.x + 500, 800);
         });
 
-        for(const flame of level1SpawnPoints.flame) {
+        for (const flame of level1SpawnPoints.flame) {
             makeFlameEnemy(k, flame.x, flame.y);
+        }
+
+        for (const guy of level1SpawnPoints.guy) {
+            makeGuyEnemy(k, guy.x, guy.y);
         }
     })
 

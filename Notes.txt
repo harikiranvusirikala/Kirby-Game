@@ -9,3 +9,4 @@ Press F1 to see the colliders.
 
 $ npm install gh-pages --save-dev
 
+$ npm run deploy

@@ -1,5 +1,7 @@
 # Kirby like Platformer Game made with TypeScript + Kaboom.js
 
+Live at [https://harikiranvusirikala.github.io/Kirby-Game/](https://harikiranvusirikala.github.io/Kirby-Game/).
+
 ## Files and purpose:
 
 - constants.ts - for constants

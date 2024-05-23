@@ -6,3 +6,6 @@ $ npm run dev
 Download Tiled here : https://www.mapeditor.org/ where we create level json and png.
 
 Press F1 to see the colliders.
+
+$ npm install gh-pages --save-dev
+

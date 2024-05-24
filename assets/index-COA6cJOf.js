@@ -47,6 +47,21 @@ var _a, _b, _c, _d, _e2, _f, _g, _h, _i, _j, _k, _l, _m, _n2, _o, _p, _q, _r2, _
   }
 })();
 const scale = 4;
+const globalGameState = {
+  scenes: ["level-1", "level-2", "end"],
+  nextScene: "",
+  currentScene: "level-1",
+  setCurrentScene(sceneName) {
+    if (this.scenes.includes(sceneName)) {
+      this.currentScene = sceneName;
+    }
+  },
+  setNextScene(sceneName) {
+    if (this.scenes.includes(sceneName)) {
+      this.nextScene = sceneName;
+    }
+  }
+};
 function makePlayer(k2, posX, posY) {
   const player = k2.make([
     k2.sprite("assets", { anim: "kirbIdle" }),
@@ -74,7 +89,7 @@ function makePlayer(k2, posX, posY) {
     }
     if (player.hp() === 0) {
       k2.destroy(player);
-      k2.go("level-1");
+      k2.go(globalGameState.currentScene);
       return;
     }
     player.hurt();
@@ -94,7 +109,7 @@ function makePlayer(k2, posX, posY) {
     );
   });
   player.onCollide("exit", () => {
-    k2.go("level-2");
+    k2.go(globalGameState.nextScene);
   });
   const inhaleEffect = k2.add([
     k2.sprite("assets", { anim: "kirbInhaleEffect" }),
@@ -121,7 +136,7 @@ function makePlayer(k2, posX, posY) {
   });
   player.onUpdate(() => {
     if (player.pos.y > 2e3) {
-      k2.go("level-1");
+      k2.go(globalGameState.currentScene);
     }
   });
   return player;
@@ -4219,11 +4234,19 @@ async function gameSetup() {
     }
   });
   k.loadSprite("level-1", "./level-1.png");
+  k.loadSprite("level-2", "./level-2.png");
+  k.add([k.rect(k.width(), k.height()), k.color(0, 0, 0), k.fixed()]);
   const { map: level1Layout, spawnPoints: level1SpawnPoints } = await makeMap(
     k,
     "level-1"
   );
+  const { map: level2Layout, spawnPoints: level2SpawnPoints } = await makeMap(
+    k,
+    "level-2"
+  );
   k.scene("level-1", () => {
+    globalGameState.setCurrentScene("level-1");
+    globalGameState.setNextScene("level-2");
     k.setGravity(2100);
     k.add([
       k.rect(k.width(), k.height()),
@@ -4260,6 +4283,48 @@ async function gameSetup() {
         );
       });
     }
+  });
+  k.scene("level-2", () => {
+    globalGameState.setCurrentScene("level-2");
+    globalGameState.setNextScene("end");
+    k.setGravity(2100);
+    k.add([
+      k.rect(k.width(), k.height()),
+      k.color(k.Color.fromHex("#f7d7db")),
+      k.fixed()
+    ]);
+    k.add(level2Layout);
+    const kirb = makePlayer(
+      k,
+      level2SpawnPoints.player[0].x,
+      level2SpawnPoints.player[0].y
+    );
+    setControls(k, kirb);
+    k.add(kirb);
+    k.camScale(k.vec2(0.7));
+    k.onUpdate(() => {
+      if (kirb.pos.x < level2Layout.pos.x + 2100)
+        k.camPos(kirb.pos.x + 500, 800);
+    });
+    for (const flame of level2SpawnPoints.flame) {
+      makeFlameEnemy(k, flame.x, flame.y);
+    }
+    for (const guy of level2SpawnPoints.guy) {
+      makeGuyEnemy(k, guy.x, guy.y);
+    }
+    for (const bird of level2SpawnPoints.bird) {
+      const possibleSpeeds = [100, 200, 300];
+      k.loop(10, () => {
+        makeBirdEnemy(
+          k,
+          bird.x,
+          bird.y,
+          possibleSpeeds[Math.floor(Math.random() * possibleSpeeds.length)]
+        );
+      });
+    }
+  });
+  k.scene("end", () => {
   });
   k.go("level-1");
 }

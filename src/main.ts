@@ -1,6 +1,7 @@
 import { makeBirdEnemy, makeFlameEnemy, makeGuyEnemy, makePlayer, setControls } from "./entities";
 import { k } from "./kaboomCtx";
 import { makeMap } from "./utils";
+import { globalGameState } from "./state";
 
 async function gameSetup() {
     k.loadSprite("assets", "./kirby-like.png", {
@@ -27,6 +28,8 @@ async function gameSetup() {
     );
 
     k.scene("level-1", () => {
+        globalGameState.setCurrentScene("level-1");
+        globalGameState.setNextScene("level-2");
         k.setGravity(2100);
         k.add([
             k.rect(k.width(), k.height()),

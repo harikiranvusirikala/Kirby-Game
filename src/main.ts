@@ -93,6 +93,40 @@ async function gameSetup() {
         ])
 
         k.add(level2Layout);
+
+        const kirb = makePlayer(
+            k,
+            level2SpawnPoints.player[0].x,
+            level2SpawnPoints.player[0].y
+        );
+
+        setControls(k, kirb);
+        k.add(kirb);
+        k.camScale(k.vec2(0.7));
+        k.onUpdate(() => {
+            if (kirb.pos.x < level2Layout.pos.x + 2100)
+                k.camPos(kirb.pos.x + 500, 800);
+        });
+
+        for (const flame of level2SpawnPoints.flame) {
+            makeFlameEnemy(k, flame.x, flame.y);
+        }
+
+        for (const guy of level2SpawnPoints.guy) {
+            makeGuyEnemy(k, guy.x, guy.y);
+        }
+
+        for (const bird of level2SpawnPoints.bird) {
+            const possibleSpeeds = [100, 200, 300];
+            k.loop(10, () => {
+                makeBirdEnemy(
+                    k,
+                    bird.x,
+                    bird.y,
+                    possibleSpeeds[Math.floor(Math.random() * possibleSpeeds.length)]
+                );
+            });
+        }
     });
 
     k.scene("end", () => { });

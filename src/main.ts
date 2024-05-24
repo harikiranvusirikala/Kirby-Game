@@ -21,10 +21,18 @@ async function gameSetup() {
     });
 
     k.loadSprite("level-1", "./level-1.png");
+    k.loadSprite("level-2", "./level-2.png");
+
+    k.add([k.rect(k.width(), k.height()), k.color(0, 0, 0), k.fixed()]);
 
     const { map: level1Layout, spawnPoints: level1SpawnPoints } = await makeMap(
         k,
         "level-1"
+    );
+
+    const { map: level2Layout, spawnPoints: level2SpawnPoints } = await makeMap(
+        k,
+        "level-2"
     );
 
     k.scene("level-1", () => {
@@ -72,7 +80,22 @@ async function gameSetup() {
                 );
             });
         }
-    })
+    });
+
+    k.scene("level-2", () => {
+        globalGameState.setCurrentScene("level-2");
+        globalGameState.setNextScene("end");
+        k.setGravity(2100);
+        k.add([
+            k.rect(k.width(), k.height()),
+            k.color(k.Color.fromHex("#f7d7db")),
+            k.fixed(),
+        ])
+
+        k.add(level2Layout);
+    });
+
+    k.scene("end", () => { });
 
     k.go("level-1");
 }
